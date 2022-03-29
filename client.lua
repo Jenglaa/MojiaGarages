@@ -1564,86 +1564,86 @@ RegisterNetEvent('MojiaGarages:client:updateRadialmenu', function()
 	local plate = QBCore.Functions.GetPlate(veh)		
 	--Open garage
 	if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and not IsPedInAnyVehicle(ped, false) then
-		exports["qb-radialmenu"]:addSubMenu(3, 'opengarage', {
+		exports["qb-radialmenu"]:AddOption({
 			id = 'opengarage',
 			title = 'Open Garages',
 			icon = 'car',
 			type = 'client',
 			event = 'MojiaGarages:client:openGarage',
 			shouldClose = true
-		})
+		},3)
 	else
-		exports["qb-radialmenu"]:removeSubMenu(3, 'opengarage')
+		exports["qb-radialmenu"]:RemoveOption(3, 'opengarage')
 	end
 	--Store Vehicle
 	if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and Garages[currentgarage].canStoreVehicle then
 		if UsingMojiaVehiclekeys then
             if exports['MojiaVehicleKeys']:CheckHasKey(plate) then
-                exports["qb-radialmenu"]:addSubMenu(3, 'storevehicle', {
+                exports["qb-radialmenu"]:AddOption({
                     id = 'storevehicle',
                     title = 'Store Vehicle',
                     icon = 'car',
                     type = 'client',
                     event = 'MojiaGarages:client:storeVehicle',
                     shouldClose = true
-                })
+                },3)
             end
         else
             if exports['qb-vehiclekeys']:HasVehicleKey(plate) then
-                exports["qb-radialmenu"]:addSubMenu(3, 'storevehicle', {
+                exports["qb-radialmenu"]:AddOption({
                     id = 'storevehicle',
                     title = 'Store Vehicle',
                     icon = 'car',
                     type = 'client',
                     event = 'MojiaGarages:client:storeVehicle',
                     shouldClose = true
-                })
+                },3)
             end
         end        
 	else
-		exports["qb-radialmenu"]:removeSubMenu(3, 'storevehicle')
+		exports["qb-radialmenu"]:RemoveOption(3, 'storevehicle')
 	end
 	--Job
 	if PlayerData.job then
 		if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and PlayerData.job.onduty and inJobStation[PlayerData.job.name] and lastjobveh == nil and not IsPedInAnyVehicle(ped) then
-			exports["qb-radialmenu"]:addJobSubMenu(PlayerData.job.name, PlayerData.job.name .. 'opengarage', {
+			exports["qb-radialmenu"]:AddOption({
 				id = PlayerData.job.name .. 'opengarage',
-				title = 'Open Garages',
+				title = PlayerData.job.name .. ' Open Garages',
 				icon = 'car',
 				type = 'client',
 				event = 'MojiaGarages:client:openJobVehList',
 				shouldClose = true
-			})
+			},PlayerData.job.name .. 'opengarage')
 		else
-			exports["qb-radialmenu"]:removeJobSubMenu(PlayerData.job.name, PlayerData.job.name .. 'opengarage')
+			exports["qb-radialmenu"]:RemoveOption(PlayerData.job.name .. 'opengarage')
 		end
 		if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and PlayerData.job.onduty and inJobStation[PlayerData.job.name] and lastjobveh == veh then
 			if UsingMojiaVehiclekeys then
                 if exports['MojiaVehicleKeys']:CheckHasKey(plate) and curVeh == lastjobveh then
-                    exports["qb-radialmenu"]:addJobSubMenu(PlayerData.job.name, PlayerData.job.name .. 'storevehicle', {
+                    exports["qb-radialmenu"]:AddOption({
                         id = PlayerData.job.name .. 'storevehicle',
-                        title = 'Store Vehicle',
+                        title = PlayerData.job.name .. ' Store Vehicle',
                         icon = 'car',
                         type = 'client',
                         event = 'MojiaGarages:client:HideJobVeh',
                         shouldClose = true
-                    })
+                    },PlayerData.job.name .. 'storevehicle')
                 end
             else
                 if exports['qb-vehiclekeys']:HasVehicleKey(plate) and curVeh == lastjobveh then
-                    exports["qb-radialmenu"]:addJobSubMenu(PlayerData.job.name, PlayerData.job.name .. 'storevehicle', {
+                    exports["qb-radialmenu"]:AddOption({
                         id = PlayerData.job.name .. 'storevehicle',
-                        title = 'Store Vehicle',
+                        title = PlayerData.job.name .. ' Store Vehicle',
                         icon = 'car',
                         type = 'client',
                         event = 'MojiaGarages:client:HideJobVeh',
                         shouldClose = true
-                    })
+                    },PlayerData.job.name .. 'storevehicle')
                 end
             end
            
 		else
-			exports["qb-radialmenu"]:removeJobSubMenu(PlayerData.job.name, PlayerData.job.name .. 'storevehicle')
+			exports["qb-radialmenu"]:RemoveOption(PlayerData.job.name .. 'storevehicle')
 		end
 	end
 end)
