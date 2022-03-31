@@ -834,7 +834,7 @@ RegisterNetEvent('MojiaGarages:client:spawnOutsiteVehicle', function(properties)
 					QBCore.Functions.SpawnVehicle(properties.model, function(veh)
 						SetVehicleModifications(veh, properties.modifications)
 						SetEntityRotation(veh, properties.rotation)
-						exports['LegacyFuel']:SetFuel(veh, properties.modifications.fuelLevel)
+						exports['lj-fuel']:SetFuel(veh, properties.modifications.fuelLevel)
 					end, properties.position, true)
 				else
 					local vehcheck = QBCore.Functions.GetClosestVehicle(properties.position)
@@ -1238,7 +1238,7 @@ RegisterNetEvent('MojiaGarages:client:doTakeOutVehicle', function(vehicle) -- Ta
 					OutsideVehicles[vehicle.plate] = veh
 				end
 				SetEntityHeading(veh, Garages[currentgarage].spawnPoint[lastnearspawnpoint].w)
-				exports['LegacyFuel']:SetFuel(veh, properties.fuelLevel)
+				exports['lj-fuel']:SetFuel(veh, properties.fuelLevel)
 				TriggerServerEvent('MojiaGarages:server:updateVehicleState', 0, vehicle.plate, vehicle.garage)
 				if UsingMojiaVehiclekeys then
 					TriggerServerEvent('MojiaVehicleKeys:server:CreateVehiclekey', {model = vehicle.vehicle, plate = vehicle.plate, price = 0})
@@ -1408,7 +1408,7 @@ RegisterNetEvent('MojiaGarages:client:SpawnJobVeh', function(data) -- Take vehic
 			end
 			SetVehicleNumberPlateText(veh, data.plate)
 			SetEntityHeading(veh, header)
-			exports['LegacyFuel']:SetFuel(veh, 100.0)
+			exports['lj-fuel']:SetFuel(veh, 100.0)
 			if UsingMojiaVehiclekeys then
 				TriggerServerEvent('MojiaVehicleKeys:server:CreateVehiclekey', {model = data.model, plate = data.plate, price = 0})
 			else
