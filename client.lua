@@ -834,7 +834,7 @@ RegisterNetEvent('MojiaGarages:client:spawnOutsiteVehicle', function(properties)
 					QBCore.Functions.SpawnVehicle(properties.model, function(veh)
 						SetVehicleModifications(veh, properties.modifications)
 						SetEntityRotation(veh, properties.rotation)
-						exports['lj-fuel']:SetFuel(veh, properties.modifications.fuelLevel)
+						exports['LegacyFuel']:SetFuel(veh, properties.modifications.fuelLevel)
 					end, properties.position, true)
 				else
 					local vehcheck = QBCore.Functions.GetClosestVehicle(properties.position)
@@ -1238,7 +1238,7 @@ RegisterNetEvent('MojiaGarages:client:doTakeOutVehicle', function(vehicle) -- Ta
 					OutsideVehicles[vehicle.plate] = veh
 				end
 				SetEntityHeading(veh, Garages[currentgarage].spawnPoint[lastnearspawnpoint].w)
-				exports['lj-fuel']:SetFuel(veh, properties.fuelLevel)
+				exports['LegacyFuel']:SetFuel(veh, properties.fuelLevel)
 				TriggerServerEvent('MojiaGarages:server:updateVehicleState', 0, vehicle.plate, vehicle.garage)
 				if UsingMojiaVehiclekeys then
 					TriggerServerEvent('MojiaVehicleKeys:server:CreateVehiclekey', {model = vehicle.vehicle, plate = vehicle.plate, price = 0})
@@ -1408,7 +1408,7 @@ RegisterNetEvent('MojiaGarages:client:SpawnJobVeh', function(data) -- Take vehic
 			end
 			SetVehicleNumberPlateText(veh, data.plate)
 			SetEntityHeading(veh, header)
-			exports['lj-fuel']:SetFuel(veh, 100.0)
+			exports['LegacyFuel']:SetFuel(veh, 100.0)
 			if UsingMojiaVehiclekeys then
 				TriggerServerEvent('MojiaVehicleKeys:server:CreateVehiclekey', {model = data.model, plate = data.plate, price = 0})
 			else
@@ -1517,10 +1517,10 @@ CreateThread(function() -- Check if the player is in the garage area or not
 						inGarageStation = true
 						currentgarage = k
 						if Garages[k].job ~= nil then
-							if PlayerData.job and not inJobStation[PlayerData.job.name] and k ~= 'impound' then
+							if PlayerData.job and not inJobStation[PlayerData.job.name] then
 								inJobStation[PlayerData.job.name] = true
 							end
-						end				
+						end			
 						while inGarageStation do
 							local InZoneCoordS = GetEntityCoords(Ped)
 							if not GarageLocation[k]:isPointInside(InZoneCoordS) then
@@ -1604,7 +1604,7 @@ RegisterNetEvent('MojiaGarages:client:updateRadialmenu', function()
 		exports["qb-radialmenu"]:RemoveOption(3, 'storevehicle')
 	end
 	--Job
-	if PlayerData.job then
+	if PlayerData.job and currentgarage ~= 'impound' then
 		if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and PlayerData.job.onduty and inJobStation[PlayerData.job.name] and lastjobveh == nil and not IsPedInAnyVehicle(ped) then
 			exports["qb-radialmenu"]:AddOption({
 				id = PlayerData.job.name .. 'opengarage',
@@ -1640,10 +1640,23 @@ RegisterNetEvent('MojiaGarages:client:updateRadialmenu', function()
                         shouldClose = true
                     },PlayerData.job.name .. 'storevehicle')
                 end
-            end
-           
+            end 
 		else
 			exports["qb-radialmenu"]:RemoveOption(PlayerData.job.name .. 'storevehicle')
+		end
+	end
+	if PlayerData.job and currentgarage == 'impound' then
+		if inGarageStation and currentgarage ~= nil and not PlayerData.metadata['ishandcuffed'] and not PlayerData.metadata['inlaststand'] and not PlayerData.metadata['isdead'] and not IsPauseMenuActive() and PlayerData.job.onduty and inJobStation[PlayerData.job.name] and lastjobveh == nil and not IsPedInAnyVehicle(ped) then
+			exports["qb-radialmenu"]:AddOption({
+				id = 'Impound Garage',
+				title = 'Impound Garage',
+				icon = 'car',
+				type = 'client',
+				event = 'MojiaGarages:client:openGarage',
+				shouldClose = true
+			},'Impound Garage')
+		else
+			exports["qb-radialmenu"]:RemoveOption('Impound Garage')
 		end
 	end
 end)
